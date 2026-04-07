@@ -72,6 +72,7 @@ The global `config.lua` sets:
 
 Commands are triggered by:
 - A prefix (configurable per server, default `!`), e.g. `!ban @user`
+- Or a direct mention of the bot, e.g. `@NotaBot ban @user`
 
 **Built-in command:**
 - `help` — lists all commands you have access to. Use `help <command>` for details on a specific command. Results are paginated with Previous/Next buttons.
