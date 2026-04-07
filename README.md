@@ -72,18 +72,17 @@ The global `config.lua` sets:
 
 Commands are triggered by:
 - A prefix (configurable per server, default `!`), e.g. `!ban @user`
-- Or a direct mention of the bot, e.g. `@NotaBot ban @user`
 
 **Built-in command:**
 - `help` — lists all commands you have access to. Use `help <command>` for details on a specific command. Results are paginated with Previous/Next buttons.
 
 **Argument syntax:**
-- Required arguments: `arg`
+- Required arguments: `<arg>`
 - Optional arguments: `[arg]`
 
 Most moderation commands are **silent** — they delete your invoking message after running.
 
-**Permission checks** are per-command. Users without the required role or Discord permission are silently ignored.
+**Permission checks** are per-command. Users without the required role or Discord permission may be rejected.
 
 ---
 
@@ -119,7 +118,7 @@ Bans, unbans, and manages ban durations. Requires the **Ban Members** Discord pe
 
 **Notes:**
 - Bans are tracked with expiration times. The bot automatically unbans when the duration expires.
-- You cannot ban someone with a higher or equal role than yours.
+- You cannot ban someone with a higher or equal role than yours, nor an admin.
 - Bans made manually (outside the bot) are picked up from the audit log.
 
 ---
@@ -161,7 +160,7 @@ Mutes and unmutes members via a mute role. Requires admin or a configured author
 
 **Notes:**
 - The bot automatically sets the mute role permissions on all text and voice channels (denies send messages, add reactions, speak).
-- If a muted user leaves and rejoins, the mute role is reapplied.
+- If a muted user leaves and rejoins the guild, the mute role is reapplied.
 - Mutes persist across restarts.
 
 ---
@@ -206,17 +205,7 @@ Anti-raid protection with automatic detection, server lockdown, and join/spam ru
 - Default: 10 joins in 5 seconds triggers a 10-minute lock.
 
 **Spam score detection:**
-- Each message receives a score based on content:
-  - Base: **+1** per message
-  - **+1** per spam keyword (`nitro`, `free`, `crypto`, `steam`, `discord`, etc.)
-  - **+1** if a spam hint is present (`gift`, `bitcoin`, `airdrop`, etc.)
-  - **+1** per unique user ping
-  - **×2** for `@everyone`, `@here`, or role pings
-  - **×2** for non-Discord external links
-  - **+1** for each channel switch
-  - Score compounds for repeated content
-- If total score exceeds `SpamCountThreshold` within `SpamTimeThreshold` seconds, the member is auto-muted (or banned if mute is unavailable).
-- Default: score > 7 in 10 seconds triggers action.
+- Messages are scored based on content. If the score exceeds `SpamCountThreshold` within `SpamTimeThreshold` seconds, the member is auto-muted (or banned if mute is unavailable).
 
 **New member message auto-ban:**
 - If a member sends any message within `SendMessageThreshold` seconds of joining, they are auto-banned (bot detection).
@@ -227,8 +216,8 @@ Anti-raid protection with automatic detection, server lockdown, and join/spam ru
 When locked:
 - New joins are auto-kicked unless they match an `authorize` rule.
 - Server verification level is raised to `LockServerVerificationLevel` (default: `high`).
-- An alert with a red embed is posted to `LockAlertChannel`.
-- On unlock: verification level is restored; a green alert is posted.
+- An alert is posted to `LockAlertChannel`.
+- On unlock: verification level is restored.
 - Lock expires automatically after `DefaultLockDuration`.
 
 #### Commands
@@ -294,8 +283,8 @@ Ticket-based modmail system. Members can open tickets that create private channe
 
 | Command | Usage | Description |
 |---|---|---|
-| `newticket` | `newticket [member] [message]` | Opens a modmail ticket (optionally on behalf of a member). |
-| `modticket` | `modticket <member> [message]` | Opens a ticket for a member (staff only). |
+| `newticket` | `newticket [message]` | Opens a modmail ticket. |
+| `modticket` | `modticket <member> [message]` | Opens a moderation ticket for a member where they cannot respond (staff only). |
 | `closeticket` | `closeticket [reason]` | Closes the current ticket. |
 | `createticketform` | `createticketform <channel>` | Posts a button in a channel that members can click to open a ticket. |
 
@@ -352,7 +341,7 @@ Bulk deletes messages in a channel. Requires **Manage Messages**.
 
 | Command | Usage | Description |
 |---|---|---|
-| `prune` | `prune <count>` | Deletes the last N messages (max 100, no older than 14 days). |
+| `prune` | `prune <count>` | Deletes the last N messages (no older than 14 days). |
 | `prunefrom` | `prunefrom <messageId>` | Deletes all messages from a given message ID up to the current message. |
 
 ---
@@ -381,7 +370,7 @@ Pins messages via command or by emoji vote.
 | Command | Usage | Description |
 |---|---|---|
 | `pin` | `pin <messageId>` | Pins a message. Requires Manage Messages or channel ownership. |
-| `unpin` | `unpin <messageId>` | Unpins a message. |
+| `unpin` | `unpin <messageId>` | Unpins a message. Requires the same permission as `pin`. |
 
 **Auto-pin:** When a message receives enough pin emoji reactions (default: 📌 × 10), it is automatically pinned and optionally posted to an alert channel.
 
@@ -457,7 +446,7 @@ Manages bot-sent messages, auto-replies, and aliases.
 
 | Command | Usage | Description |
 |---|---|---|
-| `sendmessage` | `sendmessage [channel] [content]` | Sends a message (or opens an interactive editor) as the bot. |
+| `sendmessage` | `sendmessage [channel] [content]` | Sends a message as the bot. |
 | `editmessage` | `editmessage <message> [content]` | Edits a bot message. |
 | `rawmessage` | `rawmessage <message>` | Shows the raw JSON of a bot message. |
 | `addreply` | `addreply <trigger> [content]` | Adds an auto-reply triggered by a keyword. |
